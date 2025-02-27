@@ -42,6 +42,8 @@ export default function Detail() {
     }
   };
 
+  console.log(data?.status_a);
+
   return (
     <div className="mycontainer mx-auto px-2 pb-10 pt-4">
       <Button className="mb-4" onClick={() => router.push("/approval")}>
@@ -248,7 +250,7 @@ export default function Detail() {
             </Table>
           </div>
 
-          {data?.status_a != "" ? (
+          {data?.status_a != undefined ? (
             <Button type="button" disabled>
               DATA SUDAH DI APPROVAL
             </Button>

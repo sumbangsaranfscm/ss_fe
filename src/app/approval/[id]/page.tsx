@@ -114,23 +114,40 @@ export default function Detail() {
                     KETERANGAN SEKITAR SARAN
                   </TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell className="border-r font-medium">
+                <TableRow className="hidden md:table-row">
+                  <TableCell className="border-r font-semibold">
                     KEADAAN SEBELUMNYA
                   </TableCell>
-                  <TableCell className="border-r font-medium">
+                  <TableCell className="font-semibold">
                     SARAN YANG DIAJUKAN
                   </TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
+                <TableRow className="hidden md:table-row">
                   <TableCell className="border-r align-top">
-                    {data?.keadaan_sebelumnya}
+                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iusto quisquam libero maxime voluptatibus, enim voluptatum neque iste. Recusandae, ex.
                   </TableCell>
                   <TableCell className="align-top">
-                    {data?.saran_yang_diajukan}
+                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet consectetur adipisicing elit. Error aut iure in sint perspiciatis dolore enim earum suscipit inventore delectus!
                   </TableCell>
+                </TableRow>
+
+                <TableRow className="md:hidden">
+                  <TableCell colSpan={2} className="font-semibold">
+                    KEADAAN SEBELUMNYA
+                  </TableCell>
+                </TableRow>
+                <TableRow className="md:hidden">
+                  <TableCell colSpan={2}>{data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iusto quisquam libero maxime voluptatibus, enim voluptatum neque iste. Recusandae, ex.</TableCell>
+                </TableRow>
+                <TableRow className="md:hidden">
+                  <TableCell colSpan={2} className="font-semibold">
+                    SARAN YANG DIAJUKAN
+                  </TableCell>
+                </TableRow>
+                <TableRow className="md:hidden">
+                  <TableCell colSpan={2}>{data?.saran_yang_diajukan} Lorem ipsum dolor sit amet consectetur adipisicing elit. Error aut iure in sint perspiciatis dolore enim earum suscipit inventore delectus!</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -151,7 +168,7 @@ export default function Detail() {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
-                    {data?.hasil_atau_manfaat_yang_diharapkan}
+                    {data?.hasil_atau_manfaat_yang_diharapkan} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloremque enim quis exercitationem! Repudiandae pariatur quod neque? Optio voluptatibus deleniti quibusdam!
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -174,13 +191,13 @@ export default function Detail() {
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
                     <div className="grid w-full grid-cols-12 gap-2">
-                      <div className="col-span-12 md:col-span-6 grid items-center gap-1.5">
+                      <div className="col-span-12 grid items-center gap-1.5 md:col-span-6">
                         <Label htmlFor="nama">
                           Nama<span className="text-red-700">*</span>
                         </Label>
                         <Input type="nama" id="nama" placeholder="Nama" />
                       </div>
-                      <div className="col-span-12 md:col-span-6 grid items-center gap-1.5">
+                      <div className="col-span-12 grid items-center gap-1.5 md:col-span-6">
                         <Label htmlFor="tanggal">Tanggal</Label>
                         <Input
                           type="tanggal"
@@ -306,7 +323,7 @@ export default function Detail() {
             </Table>
           </div>
 
-          {data?.status_a != undefined ? (
+          {data?.status_a.trim().length !== 0 ? (
             <Button type="button" disabled>
               DATA SUDAH DI APPROVAL
             </Button>

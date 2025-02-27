@@ -2,7 +2,7 @@
 import useSSModule from "@/app/lib";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
+import { Input } from "@/components/ui/input";
 
 const radioList = [
   "Saran dapat dipakai/dilaksanakan",
@@ -22,6 +23,12 @@ const radioList = [
   "Tidak dapat dipakai",
 ];
 
+const sasaranSaranList = ["Cost Down", "Kualitas", "Safety", "Lain-lain"];
+
+const pelaksanaanList = ["Belum", "Sudah"];
+
+const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
+
 export default function Detail() {
   const params = useParams<{ id: string }>();
   const { useGetDetail } = useSSModule();
@@ -29,16 +36,24 @@ export default function Detail() {
   const router = useRouter();
   const { useUpdatePersetujuan } = useSSModule();
   const { isPending: isPendingUpdate, mutate } = useUpdatePersetujuan();
-
+  const [tanggal, setTanggal] = useState("");
   const [statusA, setStatusA] = useState("");
   const [statusB, setStatusB] = useState("Tidak Ada");
+
+  useEffect(() => {
+    const today = new Date().toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+    setTanggal(today);
+  }, []);
 
   const handleSubmit = () => {
     if (statusA == "") {
       toast.error("Kolom untuk atasan belum di isi");
     } else {
       mutate({ status_a: statusA, status_b: statusB, id: params.id });
-      toast.success("Berhasil submit!");
     }
   };
 
@@ -83,43 +98,6 @@ export default function Detail() {
                     Departement/Seksi
                   </TableCell>
                   <TableCell>{data?.departemen_seksi}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="mb-4 overflow-hidden rounded-md border">
-            <Table>
-              <TableBody>
-                <TableRow className="col-span-2">
-                  <TableCell
-                    colSpan={2}
-                    className="border-r bg-neutral-50 text-center font-semibold"
-                  >
-                    SASARAN DITERIMA
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="border-r font-medium">Nama</TableCell>
-                  <TableCell>{data?.nama_sasaran}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="border-r font-medium">
-                    Sasaran Saran
-                  </TableCell>
-                  <TableCell>{data?.sasaran_saran}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="border-r font-medium">
-                    Pelaksanaan
-                  </TableCell>
-                  <TableCell>{data?.pelaksanaan}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="border-r font-medium">
-                    Lokasi Pekerjaan
-                  </TableCell>
-                  <TableCell>{data?.lokasi_perkerjaan}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -186,9 +164,86 @@ export default function Detail() {
                 <TableRow>
                   <TableCell
                     colSpan={2}
-                    className="bg-blue-600 text-center font-semibold text-white"
+                    className="bg-blue-700 text-center font-semibold text-white"
                   >
-                    KOLOM UNTUK ATASAN
+                    SARAN DITERIMA
+                  </TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={2} className="align-top">
+                    <div className="grid w-full grid-cols-12 gap-2">
+                      <div className="col-span-12 md:col-span-6 grid items-center gap-1.5">
+                        <Label htmlFor="nama">
+                          Nama<span className="text-red-700">*</span>
+                        </Label>
+                        <Input type="nama" id="nama" placeholder="Nama" />
+                      </div>
+                      <div className="col-span-12 md:col-span-6 grid items-center gap-1.5">
+                        <Label htmlFor="tanggal">Tanggal</Label>
+                        <Input
+                          type="tanggal"
+                          id="tanggal"
+                          value={tanggal}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4 grid items-center gap-2">
+                      <Label htmlFor="tanggal">
+                        Sasaran Saran<span className="text-red-700">*</span>
+                      </Label>
+                      <RadioGroup defaultValue="">
+                        {sasaranSaranList.map((_, i) => (
+                          <div key={i} className="flex items-center space-x-2">
+                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
+                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                    <div className="mt-4 grid items-center gap-2">
+                      <Label htmlFor="tanggal">
+                        Pelaksanaan<span className="text-red-700">*</span>
+                      </Label>
+                      <RadioGroup defaultValue="">
+                        {pelaksanaanList.map((_, i) => (
+                          <div key={i} className="flex items-center space-x-2">
+                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
+                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                    <div className="mt-4 grid items-center gap-2">
+                      <Label htmlFor="tanggal">
+                        Lokasi Pekerjaan<span className="text-red-700">*</span>
+                      </Label>
+                      <RadioGroup defaultValue="">
+                        {lokasiList.map((_, i) => (
+                          <div key={i} className="flex items-center space-x-2">
+                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
+                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="mb-4 overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableCell
+                    colSpan={2}
+                    className="bg-blue-700 text-center font-semibold text-white"
+                  >
+                    KOLOM UNTUK ATASAN<span className="text-red-500">*</span>
                   </TableCell>
                 </TableRow>
               </TableHeader>
@@ -218,9 +273,10 @@ export default function Detail() {
                 <TableRow>
                   <TableCell
                     colSpan={2}
-                    className="bg-blue-600 text-center font-semibold text-white"
+                    className="bg-blue-700 text-center font-semibold text-white"
                   >
                     SEKSI LAIN YANG BERHUBUNGAN
+                    <span className="text-red-500">*</span>
                   </TableCell>
                 </TableRow>
               </TableHeader>

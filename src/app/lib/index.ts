@@ -1,6 +1,7 @@
 import { axiosClient } from "@/lib/axiosClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Saran } from "./interface";
+import toast from "react-hot-toast";
 
 const useSSModule = () => {
   const queryClient = useQueryClient();
@@ -62,7 +63,8 @@ const useSSModule = () => {
       }) =>
         apiUpdatePersetujuan(payload.id, payload.status_a, payload.status_b),
       onSuccess: () => {
-        queryClient.invalidateQueries();
+        queryClient.invalidateQueries({ queryKey: ["sarandetail"] });
+        toast.success("Berhasil submit!");
       },
     });
 

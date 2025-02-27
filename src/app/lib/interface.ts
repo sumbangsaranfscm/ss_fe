@@ -6,7 +6,8 @@ export interface Saran {
   penulis: string;
   nrp: number;
   departemen_seksi: string;
-  nama_sasaran: string;
+  nama_penerima: string;
+  tanggal_diterima: string;
   sasaran_saran: string;
   pelaksanaan: string;
   lokasi_perkerjaan: string;

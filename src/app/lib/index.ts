@@ -1,8 +1,10 @@
 import { axiosClient } from "@/lib/axiosClient";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Saran } from "./interface";
 
 const useSSModule = () => {
+  const queryClient = useQueryClient();
+
   const apiGetList = async (): Promise<Saran[]> => {
     return axiosClient
       .get(
@@ -33,14 +35,41 @@ const useSSModule = () => {
     const { data, isPending, isFetching } = useQuery({
       queryKey: ["sarandetail"],
       queryFn: () => apiGetDetail(id),
-      refetchOnWindowFocus: true,
       enabled: id !== undefined || id !== "",
     });
 
     return { data, isPending, isFetching };
   };
 
-  return { useGetList, useGetDetail };
+  const apiUpdatePersetujuan = async (
+    id: string,
+    status_a: string,
+    status_b: string,
+  ) => {
+    return axiosClient
+      .post(
+        `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update&id=${id}&status_a=${status_a}&status_b=${status_b}`,
+      )
+      .then((res) => res.data);
+  };
+  const useUpdatePersetujuan = () => {
+    const { mutate, isPending } = useMutation({
+      mutationKey: ["updatePersetujuan"],
+      mutationFn: (payload: {
+        id: string;
+        status_a: string;
+        status_b: string;
+      }) =>
+        apiUpdatePersetujuan(payload.id, payload.status_a, payload.status_b),
+      onSuccess: () => {
+        queryClient.invalidateQueries();
+      },
+    });
+
+    return { mutate, isPending };
+  };
+
+  return { useGetList, useGetDetail, useUpdatePersetujuan };
 };
 
 export default useSSModule;

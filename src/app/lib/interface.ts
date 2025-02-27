@@ -13,4 +13,6 @@ export interface Saran {
   keadaan_sebelumnya: string;
   saran_yang_diajukan: string;
   hasil_atau_manfaat_yang_diharapkan: string;
+  status_a: string;
+  status_b: string;
 }

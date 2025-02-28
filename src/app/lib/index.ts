@@ -53,9 +53,17 @@ const useSSModule = () => {
     lokasi_p: string,
   ) => {
     return axiosClient
-      .post(
-        `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update&id=${id}&status_a=${status_a}&status_b=${status_b}&nama_p=${nama_p}&tgl_d=${tgl_d}&sasaran_s=${sasaran_s}&pelaksanaan=${pelaksanaan}&lokasi_p=${lokasi_p}`,
-      )
+    .post(
+      `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update` +
+        `&id=${encodeURIComponent(id)}` +
+        `&status_a=${encodeURIComponent(status_a)}` +
+        `&status_b=${encodeURIComponent(status_b)}` +
+        `&nama_p=${encodeURIComponent(nama_p)}` +
+        `&tgl_d=${encodeURIComponent(tgl_d)}` +
+        `&sasaran_s=${encodeURIComponent(sasaran_s)}` +
+        `&pelaksanaan=${encodeURIComponent(pelaksanaan)}` +
+        `&lokasi_p=${encodeURIComponent(lokasi_p)}`
+    )
       .then((res) => res.data);
   };
   const useUpdatePersetujuan = () => {

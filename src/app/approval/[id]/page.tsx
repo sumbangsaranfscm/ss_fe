@@ -432,7 +432,7 @@ export default function Detail() {
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={statusA == "" || isPendingUpdate}
+              disabled={statusA === "" || isPendingUpdate || nama === "" || sasaran === "" || pelaksanaan === "" || lokasi === ""}
               type="button"
               className="w-full"
             >

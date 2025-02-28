@@ -15,8 +15,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
+import { format, parseISO } from "date-fns";
+import { id } from "date-fns/locale";
 
-const radioList = [
+const statusList = [
+  "Saran dapat dipakai/dilaksanakan",
+  "Masih perlu pertimbangan",
+  "Pengulangan saran/ide lama",
+  "Tidak dapat dipakai",
+];
+
+const statusList2 = [
+  "Tidak Ada",
   "Saran dapat dipakai/dilaksanakan",
   "Masih perlu pertimbangan",
   "Pengulangan saran/ide lama",
@@ -36,28 +46,40 @@ export default function Detail() {
   const router = useRouter();
   const { useUpdatePersetujuan } = useSSModule();
   const { isPending: isPendingUpdate, mutate } = useUpdatePersetujuan();
-  const [tanggal, setTanggal] = useState("");
+
   const [statusA, setStatusA] = useState("");
   const [statusB, setStatusB] = useState("Tidak Ada");
+  const [nama, setNama] = useState("");
+  const [tanggal, setTanggal] = useState("");
+  const [sasaran, setSasaran] = useState("");
+  const [pelaksanaan, setPelaksanaan] = useState("");
+  const [lokasi, setLokasi] = useState("");
 
   useEffect(() => {
-    const today = new Date().toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-    setTanggal(today);
+    const iso = new Date().toISOString();
+    const parseDate = format(parseISO(iso), "d MMMM yyyy", { locale: id });
+    setTanggal(parseDate);
   }, []);
 
   const handleSubmit = () => {
     if (statusA == "") {
       toast.error("Kolom untuk atasan belum di isi");
     } else {
-      mutate({ status_a: statusA, status_b: statusB, id: params.id });
+      mutate({
+        status_a: statusA,
+        status_b: statusB,
+        id: params.id,
+        nama_p: nama,
+        tgl_d: tanggal,
+        sasaran_s: sasaran,
+        pelaksanaan: pelaksanaan,
+        lokasi_p: lokasi,
+      });
     }
   };
 
-  console.log(data?.status_a);
+  console.log(data);
+  console.log(data?.status_a.trim().length !== 0);
 
   return (
     <div className="mycontainer mx-auto px-2 pb-10 pt-4">
@@ -87,7 +109,7 @@ export default function Detail() {
                   <TableCell className="border-r font-medium">
                     Penulis
                   </TableCell>
-                  <TableCell>Rizky</TableCell>
+                  <TableCell>{data?.penulis}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="border-r font-medium">NRP.</TableCell>
@@ -126,10 +148,15 @@ export default function Detail() {
               <TableBody>
                 <TableRow className="hidden md:table-row">
                   <TableCell className="border-r align-top">
-                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iusto quisquam libero maxime voluptatibus, enim voluptatum neque iste. Recusandae, ex.
+                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
+                    consectetur adipisicing elit. Similique iusto quisquam
+                    libero maxime voluptatibus, enim voluptatum neque iste.
+                    Recusandae, ex.
                   </TableCell>
                   <TableCell className="align-top">
-                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet consectetur adipisicing elit. Error aut iure in sint perspiciatis dolore enim earum suscipit inventore delectus!
+                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
+                    consectetur adipisicing elit. Error aut iure in sint
+                    perspiciatis dolore enim earum suscipit inventore delectus!
                   </TableCell>
                 </TableRow>
 
@@ -139,7 +166,12 @@ export default function Detail() {
                   </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
-                  <TableCell colSpan={2}>{data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iusto quisquam libero maxime voluptatibus, enim voluptatum neque iste. Recusandae, ex.</TableCell>
+                  <TableCell colSpan={2}>
+                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
+                    consectetur adipisicing elit. Similique iusto quisquam
+                    libero maxime voluptatibus, enim voluptatum neque iste.
+                    Recusandae, ex.
+                  </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
                   <TableCell colSpan={2} className="font-semibold">
@@ -147,7 +179,11 @@ export default function Detail() {
                   </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
-                  <TableCell colSpan={2}>{data?.saran_yang_diajukan} Lorem ipsum dolor sit amet consectetur adipisicing elit. Error aut iure in sint perspiciatis dolore enim earum suscipit inventore delectus!</TableCell>
+                  <TableCell colSpan={2}>
+                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
+                    consectetur adipisicing elit. Error aut iure in sint
+                    perspiciatis dolore enim earum suscipit inventore delectus!
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -168,7 +204,10 @@ export default function Detail() {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
-                    {data?.hasil_atau_manfaat_yang_diharapkan} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloremque enim quis exercitationem! Repudiandae pariatur quod neque? Optio voluptatibus deleniti quibusdam!
+                    {data?.hasil_atau_manfaat_yang_diharapkan} Lorem ipsum dolor
+                    sit, amet consectetur adipisicing elit. Doloremque enim quis
+                    exercitationem! Repudiandae pariatur quod neque? Optio
+                    voluptatibus deleniti quibusdam!
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -195,14 +234,34 @@ export default function Detail() {
                         <Label htmlFor="nama">
                           Nama<span className="text-red-700">*</span>
                         </Label>
-                        <Input type="nama" id="nama" placeholder="Nama" />
+                        <Input
+                          value={
+                            data?.status_a.trim().length !== 0
+                              ? data?.nama_penerima
+                              : nama
+                          }
+                          onChange={(e) => setNama(e.target.value)}
+                          readOnly={data?.status_a.trim().length !== 0}
+                          type="nama"
+                          id="nama"
+                          placeholder="Nama"
+                        />
                       </div>
                       <div className="col-span-12 grid items-center gap-1.5 md:col-span-6">
                         <Label htmlFor="tanggal">Tanggal</Label>
                         <Input
-                          type="tanggal"
+                          type="text"
                           id="tanggal"
-                          value={tanggal}
+                          value={
+                            data?.status_a.trim().length !== 0 &&
+                            data?.tanggal_diterima
+                              ? format(
+                                  parseISO(data?.tanggal_diterima),
+                                  "d MMMM yyyy",
+                                  { locale: id },
+                                )
+                              : tanggal
+                          }
                           readOnly
                         />
                       </div>
@@ -211,11 +270,22 @@ export default function Detail() {
                       <Label htmlFor="tanggal">
                         Sasaran Saran<span className="text-red-700">*</span>
                       </Label>
-                      <RadioGroup defaultValue="">
+                      <RadioGroup
+                        onValueChange={(e) => setSasaran(e)}
+                        defaultValue={
+                          data?.status_a.trim().length !== 0
+                            ? data?.sasaran_saran
+                            : ""
+                        }
+                      >
                         {sasaranSaranList.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
-                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                            <RadioGroupItem
+                              disabled={data?.status_a.trim().length !== 0}
+                              value={_}
+                              id={`r_${_}`}
+                            />
+                            <Label htmlFor={`r_${_}`}>{_}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -224,11 +294,22 @@ export default function Detail() {
                       <Label htmlFor="tanggal">
                         Pelaksanaan<span className="text-red-700">*</span>
                       </Label>
-                      <RadioGroup defaultValue="">
+                      <RadioGroup
+                        onValueChange={(e) => setPelaksanaan(e)}
+                        defaultValue={
+                          data?.status_a.trim().length !== 0
+                            ? data?.pelaksanaan
+                            : ""
+                        }
+                      >
                         {pelaksanaanList.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
-                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                            <RadioGroupItem
+                              disabled={data?.status_a.trim().length !== 0}
+                              value={_}
+                              id={`r_${_}`}
+                            />
+                            <Label htmlFor={`r_${_}`}>{_}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -237,11 +318,22 @@ export default function Detail() {
                       <Label htmlFor="tanggal">
                         Lokasi Pekerjaan<span className="text-red-700">*</span>
                       </Label>
-                      <RadioGroup defaultValue="">
+                      <RadioGroup
+                        onValueChange={(e) => setLokasi(e)}
+                        defaultValue={
+                          data?.status_a.trim().length !== 0
+                            ? data?.lokasi_perkerjaan
+                            : ""
+                        }
+                      >
                         {lokasiList.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem value={_} id={`r_${i + 1}`} />
-                            <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                            <RadioGroupItem
+                              disabled={data?.status_a.trim().length !== 0}
+                              value={_}
+                              id={`r_${_}`}
+                            />
+                            <Label htmlFor={`r_${_}`}>{_}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -269,12 +361,18 @@ export default function Detail() {
                   <TableCell colSpan={2} className="align-top">
                     <RadioGroup
                       onValueChange={(e) => setStatusA(e)}
-                      defaultValue=""
+                      defaultValue={
+                        data?.status_a.trim().length !== 0 ? data?.status_a : ""
+                      }
                     >
-                      {radioList.map((_, i) => (
+                      {statusList.map((_, i) => (
                         <div key={i} className="flex items-center space-x-2">
-                          <RadioGroupItem value={_} id={`r_${i + 1}`} />
-                          <Label htmlFor={`r_${i + 1}`}>{_}</Label>
+                          <RadioGroupItem
+                            disabled={data?.status_a.trim().length !== 0}
+                            value={_}
+                            id={`r_${_}`}
+                          />
+                          <Label htmlFor={`r_${_}`}>{_}</Label>
                         </div>
                       ))}
                     </RadioGroup>
@@ -302,17 +400,21 @@ export default function Detail() {
                   <TableCell colSpan={2} className="align-top">
                     <RadioGroup
                       onValueChange={(e) => setStatusB(e)}
-                      defaultValue="Tidak Ada"
+                      defaultValue={
+                        data?.status_b.trim().length !== 0
+                          ? data?.status_b
+                          : "Tidak Ada"
+                      }
                     >
                       <>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Tidak Ada" id={`r_6`} />
-                          <Label htmlFor={`r_5`}>Tidak Ada</Label>
-                        </div>
-                        {radioList.map((_, i) => (
+                        {statusList2.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem value={_} id={`r_${i + 5}`} />
-                            <Label htmlFor={`r_${i + 5}`}>{_}</Label>
+                            <RadioGroupItem
+                              disabled={data?.status_a.trim().length !== 0}
+                              value={_}
+                              id={`r_${_ + i + 5}`}
+                            />
+                            <Label htmlFor={`r_${_ + i + 5}`}>{_}</Label>
                           </div>
                         ))}
                       </>
@@ -324,7 +426,7 @@ export default function Detail() {
           </div>
 
           {data?.status_a.trim().length !== 0 ? (
-            <Button type="button" disabled>
+            <Button type="button" disabled className="w-full">
               DATA SUDAH DI APPROVAL
             </Button>
           ) : (

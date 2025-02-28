@@ -46,10 +46,15 @@ const useSSModule = () => {
     id: string,
     status_a: string,
     status_b: string,
+    nama_p: string,
+    tgl_d: string,
+    sasaran_s: string,
+    pelaksanaan: string,
+    lokasi_p: string,
   ) => {
     return axiosClient
       .post(
-        `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update&id=${id}&status_a=${status_a}&status_b=${status_b}`,
+        `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update&id=${id}&status_a=${status_a}&status_b=${status_b}&nama_p=${nama_p}&tgl_d=${tgl_d}&sasaran_s=${sasaran_s}&pelaksanaan=${pelaksanaan}&lokasi_p=${lokasi_p}`,
       )
       .then((res) => res.data);
   };
@@ -60,8 +65,22 @@ const useSSModule = () => {
         id: string;
         status_a: string;
         status_b: string;
+        nama_p: string;
+        tgl_d: string;
+        sasaran_s: string;
+        pelaksanaan: string;
+        lokasi_p: string;
       }) =>
-        apiUpdatePersetujuan(payload.id, payload.status_a, payload.status_b),
+        apiUpdatePersetujuan(
+          payload.id,
+          payload.status_a,
+          payload.status_b,
+          payload.tgl_d,
+          payload.nama_p,
+          payload.sasaran_s,
+          payload.pelaksanaan,
+          payload.lokasi_p,
+        ),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["sarandetail"] });
         toast.success("Berhasil submit!");

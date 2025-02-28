@@ -24,6 +24,25 @@ const useSSModule = () => {
     return { data, isFetching, isPending };
   };
 
+  const apiGetListKomite = async (): Promise<Saran[]> => {
+    return axiosClient
+      .get(
+        "https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=readDataKomite",
+        { params: { action: "read" } },
+      )
+      .then((res) => res.data.data);
+  };
+  const useGetListKomite = () => {
+    const { data, isFetching, isPending } = useQuery({
+      queryKey: ["listsaran"],
+      queryFn: () => apiGetListKomite(),
+      refetchOnWindowFocus: true,
+    });
+
+    return { data, isFetching, isPending };
+  };
+
+
   const apiGetDetail = async (id: string): Promise<Saran> => {
     return axiosClient
       .get(
@@ -98,7 +117,7 @@ const useSSModule = () => {
     return { mutate, isPending };
   };
 
-  return { useGetList, useGetDetail, useUpdatePersetujuan };
+  return { useGetList, useGetDetail, useUpdatePersetujuan, useGetListKomite };
 };
 
 export default useSSModule;

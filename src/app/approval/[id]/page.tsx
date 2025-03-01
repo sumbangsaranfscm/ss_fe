@@ -42,7 +42,7 @@ const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
 export default function Detail() {
   const params = useParams<{ id: string }>();
   const { useGetDetail } = useSSModule();
-  const { data, isFetching, isPending } = useGetDetail(params.id);
+  const { data, isFetching, isPending } = useGetDetail(params?.id ?? "");
   const router = useRouter();
   const { useUpdatePersetujuan } = useSSModule();
   const { isPending: isPendingUpdate, mutate } = useUpdatePersetujuan();
@@ -68,7 +68,7 @@ export default function Detail() {
       mutate({
         status_a: statusA,
         status_b: statusB,
-        id: params.id,
+        id: params?.id ?? "",
         nama_p: nama,
         tgl_d: tanggal,
         sasaran_s: sasaran,

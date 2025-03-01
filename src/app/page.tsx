@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,7 +19,10 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [kode, setKode] = useState("");
-  const [selectedPage, setSelectedPage] = useState<"approval" | "komite" | "">("");
+  const [selectedPage, setSelectedPage] = useState<"approval" | "komite" | "">(
+    "",
+  );
+  const { data: session, status } = useSession();
 
   const handleSubmit = async () => {
     if (!selectedPage) return;
@@ -36,6 +39,12 @@ export default function Home() {
       router.push(`/${selectedPage}`);
     }
   };
+
+  useEffect(() => {
+    if (status == "authenticated") {
+      router.push(`/${session.user.role}`);
+    }
+  }, [session, router, status]);
 
   return (
     <div className="flex h-screen w-full items-center justify-center">
@@ -84,7 +93,7 @@ export default function Home() {
           />
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
           <DialogFooter>
-            <Button onClick={handleSubmit}>Submit</Button>
+            <Button onClick={handleSubmit}>Masuk</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

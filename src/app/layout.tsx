@@ -5,6 +5,7 @@ import "./globals.css";
 import ReactQuery from "@/components/ReactQuery";
 import NextAuthProvider from "@/components/NextAuthProvider";
 import { ReactNode } from "react";
+import LoadingSession from "@/components/LoadingSession";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -29,7 +30,9 @@ export default function RootLayout({ children, session }: NextAuthProps) {
         <NextAuthProvider session={session}>
           <ReactQuery>
             <Toaster />
-            {children}
+            <LoadingSession>
+              {children}
+            </LoadingSession>
           </ReactQuery>
         </NextAuthProvider>
       </body>

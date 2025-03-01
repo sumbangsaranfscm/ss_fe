@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,21 +17,23 @@ import { Input } from "@/components/ui/input";
 export default function Home() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [code, setCode] = useState("");
-  const [targetPage, setTargetPage] = useState("");
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
+  const [kode, setKode] = useState("");
+  const [selectedPage, setSelectedPage] = useState<"approval" | "komite" | "">("");
 
-  const handleNavigate = () => {
-    if (
-      (targetPage === "/approval" && code === process.env.NEXT_PUBLIC_PWAPPROVAL) ||
-      (targetPage === "/komite" && code === process.env.NEXT_PUBLIC_PWKOMITE)
-    ) {
-      setOpen(false);
-      setCode("");
-      setError("");
-      router.push(targetPage);
+  const handleSubmit = async () => {
+    if (!selectedPage) return;
+
+    const result = await signIn("credentials", {
+      kode,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Kode salah!");
     } else {
-      setError("Kode yang dimasukkan salah. Silakan coba lagi.");
+      setOpen(false);
+      router.push(`/${selectedPage}`);
     }
   };
 
@@ -39,9 +42,10 @@ export default function Home() {
       <div className="flex items-center space-x-4">
         <Button
           onClick={() => {
-            setTargetPage("/approval");
+            setSelectedPage("approval");
             setOpen(true);
             setError("");
+            setKode("");
           }}
           variant="link"
         >
@@ -50,9 +54,10 @@ export default function Home() {
         |
         <Button
           onClick={() => {
-            setTargetPage("/komite");
+            setSelectedPage("komite");
             setOpen(true);
             setError("");
+            setKode("");
           }}
           variant="link"
         >
@@ -65,7 +70,7 @@ export default function Home() {
           <DialogHeader>
             <DialogTitle>Masukkan Kode Akses</DialogTitle>
             <DialogDescription>
-              Silakan masukkan kode akses untuk melanjutkan.
+              Silakan masukkan kode akses untuk masuk ke halaman {selectedPage}.
             </DialogDescription>
           </DialogHeader>
           <Input
@@ -74,12 +79,12 @@ export default function Home() {
               error ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Masukkan kode"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
+            value={kode}
+            onChange={(e) => setKode(e.target.value)}
           />
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
           <DialogFooter>
-            <Button onClick={handleNavigate}>Submit</Button>
+            <Button onClick={handleSubmit}>Submit</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -4,12 +4,19 @@ import CardSaran from "@/components/CardSaran";
 import useSSModule from "../lib";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 
 export default function Komite() {
   const { useGetListKomite } = useSSModule();
   const router = useRouter();
   const { data: listsaran = [], isFetching, isPending } = useGetListKomite();
+
+  const { data: session } = useSession();
+
+  if (session?.user.role !== "komite") {
+    return <p>Akses ditolak</p>;
+  }
 
     return (
       <div className="mycontainer mx-auto h-screen px-2 pt-4">

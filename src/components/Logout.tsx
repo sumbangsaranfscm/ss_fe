@@ -45,6 +45,7 @@ export default function Logout({ open, setOpen, handleClick }: Props) {
               }}
               type="button"
               variant="destructive"
+              className="max-sm:mt-2"
             >
               Keluar
             </Button>

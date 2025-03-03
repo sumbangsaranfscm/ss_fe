@@ -37,8 +37,8 @@ export default function Approval() {
       <h1 className="mb-5 text-2xl font-semibold">Halaman Atasan</h1>
 
       <div className="mb-2 w-full grid grid-cols-12 gap-1">
-        <Input className="col-span-6 sm:col-span-7" type="Text" placeholder="Cari..." />
-        <div className="col-span-4">
+        <Input className="col-span-12 sm:col-span-7" type="Text" placeholder="Cari..." />
+        <div className="col-span-6 sm:col-span-4">
           <Select defaultValue="Belum di Proses">
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Pilih Status" />
@@ -50,7 +50,7 @@ export default function Approval() {
             </SelectContent>
           </Select>
         </div>
-        <div className="col-span-2 sm:col-span-1">
+        <div className="col-span-6 sm:col-span-1">
           <Button
             onClick={() => {
               console.log('refetch');

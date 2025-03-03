@@ -416,30 +416,34 @@ export default function DetailKomite() {
           <div className="mb-4 overflow-hidden rounded-md border">
             <Table>
               <TableHeader>
-              <TableRow>
+                <TableRow>
                   <TableCell
                     colSpan={4}
-                    className="bg-blue-500 text-center text-white font-semibold"
+                    className="bg-blue-500 text-center font-semibold text-white"
                   >
-                   PENILAIAN OLEH TIM PENILAI <span className="text-red-500">*</span>
+                    PENILAIAN OLEH TIM PENILAI{" "}
+                    <span className="text-red-500">*</span>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableHead className=" border-r">No.</TableHead>
+                  <TableHead className="border-r">No.</TableHead>
                   <TableHead className="">Faktor Penilaian</TableHead>
-                  <TableHead className="text-center border-l">Nilai</TableHead>
-                  <TableHead className="text-center border-l">Reward</TableHead>
+                  <TableHead className="border-l text-center">Nilai</TableHead>
+                  <TableHead className="border-l text-center">Reward</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {initialData.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell className="border-r align-top">{index + 1}</TableCell>
-                    <TableCell className="border-r align-top">{item}</TableCell>
                     <TableCell className="border-r align-top">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="border-r align-top">{item}</TableCell>
+                    <TableCell className="border-r w-1/3 align-top">
                       <Input
                         type="number"
                         value={values[index]}
+                        min="0"
                         onChange={(e) =>
                           handleInputChange(index, e.target.value)
                         }

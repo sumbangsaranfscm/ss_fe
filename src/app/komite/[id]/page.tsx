@@ -9,8 +9,7 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-  TableHead
-
+  TableHead,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -44,7 +43,7 @@ const initialData = [
   "Manfaat",
   "Usaha",
   "Kepedulian",
-  "Keaslian"
+  "Keaslian",
 ];
 
 export default function DetailKomite() {
@@ -393,7 +392,12 @@ export default function DetailKomite() {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
-                    <RadioGroup defaultValue={statusKomite} onValueChange={(e) => {setstatusKomite(e)}}>
+                    <RadioGroup
+                      defaultValue={statusKomite}
+                      onValueChange={(e) => {
+                        setstatusKomite(e);
+                      }}
+                    >
                       <>
                         {statusKomiteList.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
@@ -409,39 +413,55 @@ export default function DetailKomite() {
             </Table>
           </div>
 
-          <div className="w-full max-w-3xl mx-auto mt-6">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">No.</TableHead>
-            <TableHead>Faktor Penilaian</TableHead>
-            <TableHead className="w-24 text-center">Nilai</TableHead>
-            <TableHead className="w-24 text-center">Reward</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {initialData.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{item}</TableCell>
-              <TableCell>
-                <Input
-                  type="number"
-                  value={values[index]}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  className="w-full text-center"
-                />
-              </TableCell>
-              <TableCell className="text-center">{rewards[index]}</TableCell>
-            </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colSpan={3} className="font-bold text-right">Total</TableCell>
-            <TableCell className="text-center font-bold">Rp. {totalReward}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+          <div className="mb-4 overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+              <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="bg-blue-500 text-center text-white font-semibold"
+                  >
+                   PENILAIAN OLEH TIM PENILAI <span className="text-red-500">*</span>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableHead className=" border-r">No.</TableHead>
+                  <TableHead className="">Faktor Penilaian</TableHead>
+                  <TableHead className="text-center border-l">Nilai</TableHead>
+                  <TableHead className="text-center border-l">Reward</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {initialData.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="border-r align-top">{index + 1}</TableCell>
+                    <TableCell className="border-r align-top">{item}</TableCell>
+                    <TableCell className="border-r align-top">
+                      <Input
+                        type="number"
+                        value={values[index]}
+                        onChange={(e) =>
+                          handleInputChange(index, e.target.value)
+                        }
+                        className="w-full text-center"
+                      />
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {rewards[index]}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-bold">
+                    Total
+                  </TableCell>
+                  <TableCell className="text-center font-bold">
+                    Rp. {totalReward}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
 
           {data?.status_a.trim().length !== 0 ? (
             <Button type="button" disabled className="w-full">

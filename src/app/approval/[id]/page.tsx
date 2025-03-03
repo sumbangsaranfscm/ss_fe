@@ -18,14 +18,14 @@ import { Input } from "@/components/ui/input";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 
-const statusList = [
+export const statusList = [
   "Saran dapat dipakai/dilaksanakan",
   "Masih perlu pertimbangan",
   "Pengulangan saran/ide lama",
   "Tidak dapat dipakai",
 ];
 
-const statusList2 = [
+export const statusList2 = [
   "Tidak Ada",
   "Saran dapat dipakai/dilaksanakan",
   "Masih perlu pertimbangan",
@@ -33,11 +33,16 @@ const statusList2 = [
   "Tidak dapat dipakai",
 ];
 
-const sasaranSaranList = ["Cost Down", "Kualitas", "Safety", "Lain-lain"];
+export const sasaranSaranList = [
+  "Cost Down",
+  "Kualitas",
+  "Safety",
+  "Lain-lain",
+];
 
-const pelaksanaanList = ["Belum", "Sudah"];
+export const pelaksanaanList = ["Belum", "Sudah"];
 
-const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
+export const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
 
 export default function Detail() {
   const params = useParams<{ id: string }>();
@@ -432,7 +437,14 @@ export default function Detail() {
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={statusA === "" || isPendingUpdate || nama === "" || sasaran === "" || pelaksanaan === "" || lokasi === ""}
+              disabled={
+                statusA === "" ||
+                isPendingUpdate ||
+                nama === "" ||
+                sasaran === "" ||
+                pelaksanaan === "" ||
+                lokasi === ""
+              }
               type="button"
               className="w-full"
             >

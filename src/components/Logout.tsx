@@ -34,7 +34,7 @@ export default function Logout({ open, setOpen, handleClick }: Props) {
           <DialogHeader>
             <DialogTitle>Apakah anda yakin?</DialogTitle>
             <DialogDescription>
-              Jika anda keluar anda akan diminta kembali kode untuk masuk
+              Jika anda keluar anda akan diminta kode untuk masuk
             </DialogDescription>
           </DialogHeader>
 

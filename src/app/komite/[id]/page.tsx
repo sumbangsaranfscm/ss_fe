@@ -17,13 +17,21 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
-import {
-  lokasiList,
-  pelaksanaanList,
-  sasaranSaranList,
-  statusList,
-  statusList2,
-} from "@/app/approval/[id]/page";
+
+const statusList = [
+  "Saran dapat dipakai/dilaksanakan",
+  "Masih perlu pertimbangan",
+  "Pengulangan saran/ide lama",
+  "Tidak dapat dipakai",
+];
+
+const statusList2 = [
+  "Tidak Ada",
+  "Saran dapat dipakai/dilaksanakan",
+  "Masih perlu pertimbangan",
+  "Pengulangan saran/ide lama",
+  "Tidak dapat dipakai",
+];
 
 const statusKomiteList = [
   "Sudah dilaksanakan",
@@ -31,6 +39,17 @@ const statusKomiteList = [
   "Belum dapat nilai/pending",
   "Tidak dapat dipakai",
 ];
+
+const sasaranSaranList = [
+  "Cost Down",
+  "Kualitas",
+  "Safety",
+  "Lain-lain",
+];
+
+const pelaksanaanList = ["Belum", "Sudah"];
+
+const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
 
 const initialData = [
   "Reduksi biaya",
@@ -54,7 +73,7 @@ export default function DetailKomite() {
   const [values, setValues] = useState(Array(initialData.length).fill(""));
   const [rewards, setRewards] = useState(Array(initialData.length).fill(0));
 
-  const handleInputChange = (index, value) => {
+  const handleInputChange = (index: number, value: number) => {
     const newValues = [...values];
     newValues[index] = value;
     setValues(newValues);
@@ -445,7 +464,7 @@ export default function DetailKomite() {
                         value={values[index]}
                         min="0"
                         onChange={(e) =>
-                          handleInputChange(index, e.target.value)
+                          handleInputChange(index, Number(e.target.value))
                         }
                         className="w-full text-center"
                       />

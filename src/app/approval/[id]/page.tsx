@@ -18,14 +18,14 @@ import { Input } from "@/components/ui/input";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 
-export const statusList = [
+const statusList = [
   "Saran dapat dipakai/dilaksanakan",
   "Masih perlu pertimbangan",
   "Pengulangan saran/ide lama",
   "Tidak dapat dipakai",
 ];
 
-export const statusList2 = [
+const statusList2 = [
   "Tidak Ada",
   "Saran dapat dipakai/dilaksanakan",
   "Masih perlu pertimbangan",
@@ -33,16 +33,16 @@ export const statusList2 = [
   "Tidak dapat dipakai",
 ];
 
-export const sasaranSaranList = [
+const sasaranSaranList = [
   "Cost Down",
   "Kualitas",
   "Safety",
   "Lain-lain",
 ];
 
-export const pelaksanaanList = ["Belum", "Sudah"];
+const pelaksanaanList = ["Belum", "Sudah"];
 
-export const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
+const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
 
 export default function Detail() {
   const params = useParams<{ id: string }>();

@@ -432,14 +432,14 @@ export default function DetailKomite() {
                   <TableHead className="border-l text-center">Reward</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody >
                 {initialData.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell className="border-r align-top">
+                    <TableCell className="border-r align-middle">
                       {index + 1}
                     </TableCell>
-                    <TableCell className="border-r align-top">{item}</TableCell>
-                    <TableCell className="border-r w-1/3 align-top">
+                    <TableCell className="border-r align-middle">{item}</TableCell>
+                    <TableCell className="border-r w-1/3 align-middle">
                       <Input
                         type="number"
                         value={values[index]}

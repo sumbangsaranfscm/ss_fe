@@ -3,6 +3,7 @@ import useSSModule from "@/app/lib";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -64,6 +65,7 @@ const initialData = [
   "Kepedulian",
   "Keaslian",
 ];
+const columns = ["5R", "S", "M", "E", "Q", "C", "D", "P"];
 
 export default function DetailKomite() {
   const params = useParams<{ id: string }>();
@@ -72,6 +74,7 @@ export default function DetailKomite() {
   const router = useRouter();
   const [values, setValues] = useState(Array(initialData.length).fill(""));
   const [rewards, setRewards] = useState(Array(initialData.length).fill(0));
+  const [benefit, setBenefit] = useState("");
 
   const handleInputChange = (index: number, value: number) => {
     const newValues = [...values];
@@ -451,14 +454,16 @@ export default function DetailKomite() {
                   <TableHead className="border-l text-center">Reward</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody >
+              <TableBody>
                 {initialData.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell className="border-r align-middle">
                       {index + 1}
                     </TableCell>
-                    <TableCell className="border-r align-middle">{item}</TableCell>
-                    <TableCell className="border-r w-1/3 align-middle">
+                    <TableCell className="border-r align-middle">
+                      {item}
+                    </TableCell>
+                    <TableCell className="w-1/3 border-r align-middle">
                       <Input
                         type="number"
                         value={values[index]}
@@ -480,6 +485,66 @@ export default function DetailKomite() {
                   </TableCell>
                   <TableCell className="text-center font-bold">
                     Rp. {totalReward}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="p-4 mb-4 rounded-lg border ">
+            <h2 className="text-center font-semibold">
+              Catatan Khusus oleh Kepala Divisi/Kepala Bagian <span className="text-red-500">*</span>
+            </h2>
+            <p className="text-center text-sm text-gray-600">
+              Berilah tanda X pada tulisan di dalam kolom sesuai SS tsb.
+            </p>
+
+            {/* Table */}
+            <Table className="mt-4 border">
+              <TableHeader>
+                <TableRow>
+                  {columns.map((col, index) => (
+                    <TableHead key={index} className="border text-center">
+                      {col}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {/* Row for Checkboxes */}
+                <TableRow>
+                  {columns.map((_, index) => (
+                    <TableCell key={index} className="w-12 border text-center">
+                      <Checkbox />
+                    </TableCell>
+                  ))}
+                </TableRow>
+
+                {/* Row for Benefit */}
+                <TableRow>
+                  <TableCell
+                    colSpan={3}
+                    className="border text-center font-medium"
+                  >
+                    Benefit (Rp. / MH.) Perbulan =
+                  </TableCell>
+                  <TableCell colSpan={6} className="border text-center">
+                    <Input
+                      value={benefit}
+                      onChange={(e) => setBenefit(e.target.value)}
+                      placeholder="Masukkan Benefit"
+                      className="text-center"
+                    />
+                  </TableCell>
+                </TableRow>
+
+                {/* Footer Row */}
+                <TableRow>
+                  <TableCell
+                    colSpan={9}
+                    className="border text-center font-medium"
+                  >
+                    Section/Dept./Div. Head
                   </TableCell>
                 </TableRow>
               </TableBody>

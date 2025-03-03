@@ -36,8 +36,8 @@ export default function Approval() {
       <Logout open={open} setOpen={setOpen} handleClick={() => setOpen(true)} />
       <h1 className="mb-5 text-2xl font-semibold">Halaman Atasan</h1>
 
-      <div className="mb-2 grid grid-cols-12 gap-1">
-        <Input className="col-span-7" type="Text" placeholder="Cari..." />
+      <div className="mb-2 w-full grid grid-cols-12 gap-1">
+        <Input className="col-span-6 sm:col-span-7" type="Text" placeholder="Cari..." />
         <div className="col-span-4">
           <Select defaultValue="Belum di Proses">
             <SelectTrigger className="w-full">
@@ -50,17 +50,19 @@ export default function Approval() {
             </SelectContent>
           </Select>
         </div>
-        <Button
-          onClick={() => {
-            console.log('refetch');
-            queryClient.invalidateQueries({ queryKey: ["listsaran"] });
-          }}
-          className="col-span-1"
-          size={"icon"}
-          type="button"
-        >
-          <RefreshCcw />
-        </Button>
+        <div className="col-span-2 sm:col-span-1">
+          <Button
+            onClick={() => {
+              console.log('refetch');
+              queryClient.invalidateQueries({ queryKey: ["listsaran"] });
+            }}
+            className="w-full"
+            size={"icon"}
+            type="button"
+          >
+            <RefreshCcw />
+          </Button>
+        </div>
       </div>
 
       {(isFetching || isPending) && <Loader2 className="animate-spin" />}

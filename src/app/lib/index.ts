@@ -9,7 +9,7 @@ const useSSModule = () => {
   const apiGetList = async (): Promise<Saran[]> => {
     return axiosClient
       .get(
-        "https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec",
+        `${process.env.NEXT_PUBLIC_URL}`,
         { params: { action: "read" } },
       )
       .then((res) => res.data.data);
@@ -27,7 +27,7 @@ const useSSModule = () => {
   const apiGetListKomite = async (): Promise<Saran[]> => {
     return axiosClient
       .get(
-        "https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=readDataKomite",
+        `${process.env.NEXT_PUBLIC_URL}?action=readDataKomite`,
         { params: { action: "read" } },
       )
       .then((res) => res.data.data);
@@ -46,7 +46,7 @@ const useSSModule = () => {
   const apiGetDetail = async (id: string): Promise<Saran> => {
     return axiosClient
       .get(
-        "https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec",
+        `${process.env.NEXT_PUBLIC_URL}`,
         { params: { action: "readById", id: id } },
       )
       .then((res) => res.data.data);
@@ -73,7 +73,7 @@ const useSSModule = () => {
   ) => {
     return axiosClient
     .post(
-      `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=update` +
+      `${process.env.NEXT_PUBLIC_URL}?action=update` +
         `&id=${encodeURIComponent(id)}` +
         `&status_a=${encodeURIComponent(status_a)}` +
         `&status_b=${encodeURIComponent(status_b)}` +

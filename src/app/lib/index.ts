@@ -117,7 +117,47 @@ const useSSModule = () => {
     return { mutate, isPending };
   };
 
-  return { useGetList, useGetDetail, useUpdatePersetujuan, useGetListKomite };
+  const apiUpdateKomite = async (
+    id: string,
+    komite_status: string,
+    catatan_khusus: string,
+    benefit: string,
+  ) => {
+    return axiosClient
+    .post(
+      `https://script.google.com/macros/s/AKfycbwxEQnyQ1iivfr8gnx1meY3OvSEtX9C3njK2y4OSzzWd2jPPxCbSCFtwzDjeNdo2aUU/exec?action=updateKomite` +
+        `&id=${encodeURIComponent(id)}` +
+        `&komite_status=${encodeURIComponent(komite_status)}` +
+        `&catatan_khusus=${encodeURIComponent(catatan_khusus)}` +
+        `&benefit=${encodeURIComponent(benefit)}` 
+    )
+      .then((res) => res.data);
+  };
+  const useUpdateKomite = () => {
+    const { mutate, isPending } = useMutation({
+      mutationKey: ["updateKomite"],
+      mutationFn: (payload: {
+        id: string;
+        komite_status: string,
+        catatan_khusus: string,
+        benefit: string,
+      }) =>
+        apiUpdateKomite(
+          payload.id,
+          payload.komite_status,
+          payload.catatan_khusus,
+          payload.benefit,
+        ),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["sarandetail"] });
+        toast.success("Berhasil submit!");
+      },
+    });
+
+    return { mutate, isPending };
+  };
+
+  return { useGetList, useGetDetail, useUpdatePersetujuan, useGetListKomite, useUpdateKomite };
 };
 
 export default useSSModule;

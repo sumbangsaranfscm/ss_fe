@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import useSSModule from "@/app/lib";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   Table,
   TableBody,
@@ -18,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
+import toast from "react-hot-toast";
 
 const statusList = [
   "Saran dapat dipakai/dilaksanakan",
@@ -41,12 +46,7 @@ const statusKomiteList = [
   "Tidak dapat dipakai",
 ];
 
-const sasaranSaranList = [
-  "Cost Down",
-  "Kualitas",
-  "Safety",
-  "Lain-lain",
-];
+const sasaranSaranList = ["Cost Down", "Kualitas", "Safety", "Lain-lain"];
 
 const pelaksanaanList = ["Belum", "Sudah"];
 
@@ -71,12 +71,182 @@ export default function DetailKomite() {
   const params = useParams<{ id: string }>();
   const { useGetDetail } = useSSModule();
   const { data, isFetching, isPending } = useGetDetail(params?.id ?? "");
+  console.log(data);
   const router = useRouter();
+  const { useUpdateKomite } = useSSModule();
+  const { isPending: isPendingUpdate, mutate } = useUpdateKomite();
   const [values, setValues] = useState(Array(initialData.length).fill(""));
   const [rewards, setRewards] = useState(Array(initialData.length).fill(0));
   const [benefit, setBenefit] = useState("");
+  const [komiteStatus, setKomiteStatus] = useState("");
+  const [catatanKhusus, setCatatanKhusus] = useState("null");
 
-  const handleInputChange = (index: number, value: number) => {
+  const generatePDF = () => {
+    const doc = new jsPDF("p", "mm", "a4");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const headerX = 8;
+    const headerY = 10;
+    const headerWidth = 194;
+    const headerHeight = 20;
+    const spacing = 9;
+    const logoWidth = 30;
+    const logoHeight = 12;
+    const logoX = headerX + 4;
+    const logoY = headerY + (headerHeight - logoHeight) / 2;
+    const imgData =
+      "https://i.ibb.co.com/dszdvGv1/FSCM-Manufacturing-Indonesia-1-1024x368-1.png";
+    doc.addImage(imgData, "PNG", logoX, logoY, logoWidth, logoHeight);
+
+    doc.setLineWidth(0.7);
+    doc.rect(headerX, headerY, headerWidth, headerHeight);
+
+    const separatorX = logoX + logoWidth + 4;
+    doc.line(separatorX, headerY, separatorX, headerY + headerHeight);
+
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    const textX = separatorX + (headerWidth - separatorX - 70) / 2;
+    const textY = headerY + headerHeight / 2 + 3;
+    doc.text("SUGGESTION SYSTEM", textX, textY);
+
+    autoTable(doc, {
+      startY: headerY + headerHeight + spacing,
+      tableWidth: 90,
+      margin: { left: headerX + headerWidth - 90 },
+      body: [
+        ["No. Form", "F-21.0-15-01"],
+        ["Revisi", "1"],
+        ["Tanggal", "1 September 2004"],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: { 0: { cellWidth: 40 }, 1: { cellWidth: 50 } },
+    });
+
+    const textStartY = (doc as any).lastAutoTable.finalY + spacing;
+    doc.setFont("helvetica", "italic", "bold");
+    doc.setFontSize(10);
+    doc.text(
+      "Ungkapkanlah ide, gagasan serta kreasi anda yang bermanfaat bagi diri sendiri, kelompok, maupun lingkungan kerja. Percayalah bahwa ide yang baik pasti akan menghasilkan kinerja yang lebih baik.",
+      pageWidth / 2,
+      textStartY,
+      { align: "center", maxWidth: 180 },
+    );
+
+    const pagePadding = 7;
+    const gap = 3;
+    const leftTableWidth = 90;
+    const rightTableWidth = pageWidth - leftTableWidth - 2 * pagePadding - gap;
+
+    const leftTableX = pagePadding;
+    const rightTableX = pageWidth - pagePadding - rightTableWidth;
+
+    const tableStartY = textStartY + spacing;
+
+    autoTable(doc, {
+      startY: tableStartY,
+      margin: { left: leftTableX },
+      body: [
+        ["No", `${data?.id}`],
+        ["Nama Saran", `${data?.nama_saran}`],
+        ["Penulis", `${data?.penulis}`],
+        ["NRP.", `${data?.nrp}`],
+        ["Departement/Seksi", `${data?.departemen_seksi}`],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: {
+        0: { cellWidth: leftTableWidth * 0.4 },
+        1: { cellWidth: leftTableWidth * 0.6 },
+      },
+    });
+
+    autoTable(doc, {
+      startY: tableStartY,
+      margin: { left: rightTableX },
+      body: [
+        ["Sasaran Diterima", `Nama: ${data?.nama_penerima}`],
+        [
+          "",
+          `Tgl: ${format(parseISO(data?.tanggal_diterima ?? "2025-02-26T17:00:00.000Z"), "d MMMM yyyy", { locale: id })}`,
+        ],
+        ["Sasaran Saran", `${data?.sasaran_saran}`],
+        ["Pelaksanaan", `${data?.pelaksanaan}`],
+        ["Lokasi Perkerjaan", `${data?.lokasi_perkerjaan}`],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: {
+        0: { cellWidth: rightTableWidth * 0.4 },
+        1: { cellWidth: rightTableWidth * 0.6 },
+      },
+    });
+
+    const tableStartsY = (doc as any).lastAutoTable.finalY + spacing;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(
+      "KETERANGAN SEKITAR SARAN",
+      doc.internal.pageSize.width / 2,
+      tableStartsY,
+      {
+        align: "center",
+      },
+    );
+
+    autoTable(doc, {
+      startY: tableStartsY + spacing,
+      margin: { left: 10, right: 10 },
+      body: [
+        [
+          {
+            content: "Keadaan sebelumnya",
+            styles: { halign: "center", fontStyle: "bold" },
+          },
+          {
+            content: "Saran yang diajukan",
+            styles: { halign: "center", fontStyle: "bold" },
+          },
+        ],
+        [`${data?.keadaan_sebelumnya}`, `${data?.saran_yang_diajukan}`],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 5 },
+      columnStyles: {
+        0: { cellWidth: "auto" },
+        1: { cellWidth: "auto" },
+      },
+    });
+
+    const tableStartsxY = (doc as any).lastAutoTable.finalY + spacing;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(
+      "HASIL / MANFAAT YANG DIHARAPKAN",
+      doc.internal.pageSize.width / 2,
+      tableStartsxY,
+      {
+        align: "center",
+      },
+    );
+
+    autoTable(doc, {
+      startY: tableStartsxY + spacing,
+      margin: { left: 10, right: 10 },
+      body: [[`${data?.hasil_atau_manfaat_yang_diharapkan}`]],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 5 },
+      columnStyles: {
+        0: { cellWidth: "auto", minCellHeight: 40 },
+      },
+    });
+
+    doc.save("suggestion_system.pdf");
+  };
+
+  const handleInputChange = (index: number, value: any) => {
     const newValues = [...values];
     newValues[index] = value;
     setValues(newValues);
@@ -88,16 +258,34 @@ export default function DetailKomite() {
 
   const totalReward = rewards.reduce((acc, curr) => acc + curr, 0);
 
-  const [statusKomite, setstatusKomite] = useState("");
+  const handleSubmit = () => {
+    if (komiteStatus == "") {
+      toast.error("Kolom untuk atasan belum di isi");
+    } else {
+      mutate({
+        id: params?.id ?? "",
+        komite_status: komiteStatus,
+        catatan_khusus: catatanKhusus,
+        benefit: benefit,
+      });
+    }
+  };
 
   console.log(data);
   console.log(data?.status_a.trim().length !== 0);
 
   return (
     <div className="mycontainer mx-auto px-2 pb-10 pt-4">
-      <Button className="mb-4" onClick={() => router.push("/approval")}>
+      <Button className="mb-4" onClick={() => router.push("/komite")}>
         <ArrowLeft />
         Kembali
+      </Button>
+      <Button
+        onClick={generatePDF}
+        className="fixed bottom-5 right-5 z-50"
+        size={"icon"}
+      >
+        <Download />
       </Button>
 
       {(isFetching || isPending) && <Loader2 className="animate-spin" />}
@@ -415,9 +603,9 @@ export default function DetailKomite() {
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
                     <RadioGroup
-                      defaultValue={statusKomite}
+                      defaultValue={komiteStatus}
                       onValueChange={(e) => {
-                        setstatusKomite(e);
+                        setKomiteStatus(e);
                       }}
                     >
                       <>
@@ -491,12 +679,13 @@ export default function DetailKomite() {
             </Table>
           </div>
 
-          <div className="p-4 mb-4 rounded-lg border ">
+          <div className="mb-4 rounded-lg border p-4">
             <h2 className="text-center font-semibold">
-              Catatan Khusus oleh Kepala Divisi/Kepala Bagian <span className="text-red-500">*</span>
+              Catatan Khusus oleh Kepala Divisi/Kepala Bagian{" "}
+              <span className="text-red-500">*</span>
             </h2>
             <p className="text-center text-sm text-gray-600">
-              Berilah tanda X pada tulisan di dalam kolom sesuai SS tsb.
+              Berilah tanda Centang pada tulisan di dalam kolom sesuai SS tsb.
             </p>
 
             {/* Table */}
@@ -515,7 +704,14 @@ export default function DetailKomite() {
                 <TableRow>
                   {columns.map((_, index) => (
                     <TableCell key={index} className="w-12 border text-center">
-                      <Checkbox />
+                      <Checkbox
+                        onChange={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          setCatatanKhusus(
+                            target.checked ? index.toString() : "",
+                          );
+                        }}
+                      />
                     </TableCell>
                   ))}
                 </TableRow>
@@ -530,7 +726,11 @@ export default function DetailKomite() {
                   </TableCell>
                   <TableCell colSpan={6} className="border text-center">
                     <Input
-                      value={benefit}
+                      value={
+                        data?.status_b.trim().length !== 0
+                          ? data?.benefit
+                          : benefit
+                      }
                       onChange={(e) => setBenefit(e.target.value)}
                       placeholder="Masukkan Benefit"
                       className="text-center"
@@ -538,7 +738,6 @@ export default function DetailKomite() {
                   </TableCell>
                 </TableRow>
 
-                {/* Footer Row */}
                 <TableRow>
                   <TableCell
                     colSpan={9}
@@ -551,20 +750,9 @@ export default function DetailKomite() {
             </Table>
           </div>
 
-          {data?.status_a.trim().length !== 0 ? (
-            <Button type="button" disabled className="w-full">
-              DATA SUDAH DI APPROVAL
-            </Button>
-          ) : (
-            <Button
-              onClick={() => {}}
-              disabled={true}
-              type="button"
-              className="w-full"
-            >
-              {false ? <Loader2 className="animate-spin" /> : "SUBMIT"}
-            </Button>
-          )}
+          <Button onClick={handleSubmit} type="button" className="w-full">
+            {false ? <Loader2 className="animate-spin" /> : "SUBMIT"}
+          </Button>
         </>
       )}
     </div>

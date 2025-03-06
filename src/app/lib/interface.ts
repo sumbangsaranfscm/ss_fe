@@ -17,4 +17,6 @@ export interface Saran {
   status_a: string;
   status_b: string;
   komite_status: string;
+  benefit: string;
+  catatan_khusus: string;
 }

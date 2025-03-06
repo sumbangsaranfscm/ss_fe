@@ -46,6 +46,10 @@ export default function Home() {
     }
   }, [session, router, status]);
 
+  if(status === "loading") {
+    return "Loading..."
+  }
+
   return (
     <div className="flex h-svh w-full items-center justify-center">
       <div className="flex items-center space-x-4">

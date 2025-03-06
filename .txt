@@ -1,0 +1,129 @@
+backup pdf 1 {
+      const generatePDF = () => {
+    const doc = new jsPDF("p", "mm", "a4");
+ 
+    // ** HEADER **
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    // doc.text("SUGGESTION SYSTEM", 105, 15, { align: "center" });
+    let finalY = (doc as any).lastAutoTable.finalY + 10;
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [["SUGGESTION SYSTEM"]],
+      theme: "grid",
+      styles: { fontSize: 15, },
+    });
+
+
+
+    // ** FORM INFO **
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("No. Form: F-21.0-15-01", 150, 15);
+    doc.text("Revisi: 1", 150, 20);
+    doc.text("Tanggal: 1 September 2004", 150, 25);
+
+    // ** TABEL: IDENTITAS SARAN **
+    autoTable(doc, {
+      startY: 30,
+      head: [["No", "Nama Saran", "Penulis", "NRP", "Departemen/Seksi"]],
+      body: [["1", "Saran Contoh", "John Doe", "12345", "Produksi"]],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    // ** KETERANGAN SEKITAR SARAN **
+     finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("KETERANGAN SEKITAR SARAN", 15, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [["Keadaan sebelumnya", "Saran yang diajukan"]],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+
+    // ** HASIL / MANFAAT YANG DIHARAPKAN **
+    doc.text("HASIL / MANFAAT YANG DIHARAPKAN", 15, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [["Hasil / Manfaat yang diharapkan"]],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+
+    // ** KOLOM UNTUK ATASAN & SEKSI LAIN **
+    doc.text("KOLOM UNTUK ATASAN", 15, finalY);
+    doc.text("SEKSI LAIN YANG BERHUBUNGAN", 120, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [
+        ["Saran dapat dipakai/dilaksanakan", "Paraf & Tgl"],
+        ["Masih perlu pertimbangan", ""],
+        ["Pengulangan saran/ide lama", ""],
+        ["Tidak dapat dipakai", ""],
+      ],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+
+    // ** KOLOM UNTUK KOMITE TQC **
+    doc.text("KOLOM UNTUK KOMITE TQC", 15, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [
+        ["Sudah dilaksanakan", "Paraf & Tgl"],
+        ["Masih perlu pertimbangan", ""],
+        ["Belum dapat dinilai/pending", ""],
+        ["Tidak dapat dipakai", ""],
+      ],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+
+    // ** PENILAIAN OLEH TEAM PENILAI **
+    doc.text("PENILAIAN OLEH TEAM PENILAI", 15, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      head: [["No", "Faktor Penilaian", "Nilai", "Reward"]],
+      body: [
+        ["1", "Reduksi Biaya", "", ""],
+        ["2", "Efisiensi MP", "", ""],
+        ["3", "Produktivitas", "", ""],
+        ["4", "Reduksi MTTR", "", ""],
+        ["5", "Safety", "", ""],
+        ["6", "Kualitas", "", ""],
+        ["7", "Lingkungan", "", ""],
+        ["8", "Manfaat", "", ""],
+        ["9", "Kepedulian", "", ""],
+        ["10", "Keaslian", "", ""],
+      ],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    // ** FOOTER CATATAN KHUSUS **
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.text("Catatan khusus oleh Kepala Divisi/Kepala Bagian", 15, finalY);
+    autoTable(doc, {
+      startY: finalY + 5,
+      body: [["Berilah tanda X pada tulisan didalam kolom sesuai SS tsb."]],
+      theme: "grid",
+      styles: { fontSize: 9 },
+    });
+
+    // ** SIMPAN PDF **
+    doc.save("suggestion_system.pdf");
+  };
+}
+
+
+img : https://i.ibb.co.com/dszdvGv1/FSCM-Manufacturing-Indonesia-1-1024x368-1.png

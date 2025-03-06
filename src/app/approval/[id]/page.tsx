@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import useSSModule from "@/app/lib";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -59,6 +60,7 @@ export default function Detail() {
   const [sasaran, setSasaran] = useState("");
   const [pelaksanaan, setPelaksanaan] = useState("");
   const [lokasi, setLokasi] = useState("");
+ 
 
   useEffect(() => {
     const iso = new Date().toISOString();
@@ -92,6 +94,9 @@ export default function Detail() {
         <ArrowLeft />
         Kembali
       </Button>
+
+
+      
 
       {(isFetching || isPending) && <Loader2 className="animate-spin" />}
 
@@ -348,6 +353,7 @@ export default function Detail() {
               </TableBody>
             </Table>
           </div>
+
 
           <div className="mb-4 overflow-hidden rounded-md border">
             <Table>

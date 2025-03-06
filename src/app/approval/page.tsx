@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import CardSaran from "@/components/CardSaran";
 import useSSModule from "../lib";
@@ -28,7 +29,8 @@ export default function Approval() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Belum di Proses");
 
-  // Menggunakan useMemo agar filtering tidak menyebabkan infinite loop
+
+
   const filteredItems = useMemo(() => {
     return listsaran.filter((item) => {
       const matchesSearch =
@@ -37,8 +39,11 @@ export default function Approval() {
 
       const matchesStatus =
         status === "Semua" ||
-        (status === "Belum di Proses" && (!item.status_a || item.status_a.trim().length === 0)) ||
-        (status === "Sudah di Proses" && item.status_a && item.status_a.trim().length > 0);
+        (status === "Belum di Proses" &&
+          (!item.status_a || item.status_a.trim().length === 0)) ||
+        (status === "Sudah di Proses" &&
+          item.status_a &&
+          item.status_a.trim().length > 0);
 
       return matchesSearch && matchesStatus;
     });
@@ -62,7 +67,10 @@ export default function Approval() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="col-span-6 sm:col-span-4">
-          <Select onValueChange={(e) => setStatus(e)} defaultValue="Belum di Proses">
+          <Select
+            onValueChange={(e) => setStatus(e)}
+            defaultValue="Belum di Proses"
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Pilih Status" />
             </SelectTrigger>

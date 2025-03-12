@@ -67,13 +67,17 @@ export default function DetailKomite() {
   const [catatanKhusus, setCatatanKhusus] = useState("null");
 
   const generatePDF = () => {
-    const doc = new jsPDF("p", "mm", "a4");
+    const doc = new jsPDF({
+      orientation: "p", // Portrait (tegak)
+      unit: "mm",
+      format: "a4", // [lebar, tinggi] -> Panjangnya jadi 500mm
+    });
     const pageWidth = doc.internal.pageSize.getWidth();
     const headerX = 8;
     const headerY = 10;
     const headerWidth = 194;
     const headerHeight = 20;
-    const spacing = 9;
+    const spacing = 12;
     const logoWidth = 30;
     const logoHeight = 12;
     const logoX = headerX + 4;
@@ -225,10 +229,242 @@ export default function DetailKomite() {
       },
     });
 
+    const tableStarxxY = (doc as any).lastAutoTable.finalY + spacing;
+    const colWidth = tableStarxxY / 4; // Misalnya ada 4 kolom dalam tabel
+
+    doc.text(
+      "KOLOM UNTUK ATASAN",
+      doc.internal.pageSize.width / 2 - colWidth,
+      tableStarxxY,
+      {
+        align: "center",
+      },
+    );
+
+    doc.text(
+      "SEKSI LAIN YANG BERHUBUNGAN",
+      doc.internal.pageSize.width / 2.5 + colWidth,
+      tableStarxxY,
+      {
+        align: "center",
+      },
+    );
+
+    const tableData = [["", "Paraf & Tgl.", "", "Paraf & Tgl."]];
+    const bodyData = [[`${data?.status_a}`, "", `${data?.status_b}`, ""]];
+
+    autoTable(doc, {
+      startY: tableStarxxY + spacing,
+      margin: { left: 10, right: 10 },
+      head: tableData,
+      body: bodyData,
+      theme: "grid",
+      showHead: "firstPage",
+      rowPageBreak: "avoid",
+      styles: {
+        fontSize: 10,
+        halign: "center",
+        valign: "middle",
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: false,
+        textColor: "black",
+        lineWidth: 0.1,
+        halign: "center",
+        valign: "middle",
+      },
+      columnStyles: {
+        0: { cellWidth: "auto" },
+        1: { cellWidth: 30, fontStyle: "bold" },
+        2: { cellWidth: "auto" },
+        3: { cellWidth: 30, fontStyle: "bold" },
+      },
+      willDrawCell: function (data) {
+        console.log(
+          `(willDrawCell) Row: ${data.row.index}, Column: ${data.column.index}, Content: ${data.cell.text}`,
+        );
+        console.log("Data Body:", bodyData);
+        console.log("Total Baris di Body:", bodyData.length);
+
+        if (data.row.section === "head" && data.row.index === 0) {
+          console.log("Menghapus border bawah header di index 0");
+          data.cell.styles.lineWidth = {
+            top: 0.1,
+            bottom: 0,
+            left: 0.1,
+            right: 0.1,
+          };
+        }
+
+        if (data.row.section === "head" && data.column.index === 1) {
+          data.cell.styles.lineWidth = { bottom: 0.5, top: 0.1 };
+        }
+
+        if (data.row.section === "head" && data.column.index === 3) {
+          data.cell.styles.lineWidth = { bottom: 0.5, right: 0.1, top: 0.1 };
+        }
+
+        if (
+          data.row.section === "body" &&
+          (data.column.index === 1 || data.column.index === 3)
+        ) {
+          const textX = data.cell.x + data.cell.width / 2;
+          const textY = data.cell.y + data.cell.height / 2 - 2;
+
+          data.doc.setFontSize(10);
+          data.doc.text(data.cell.text, textX, textY, {
+            align: "center",
+            baseline: "middle",
+          });
+        }
+
+        if (data.row.section === "body" && data.row.index === 0) {
+          console.log("Menghapus border atas body di index 0");
+          data.cell.styles.lineWidth = {
+            top: 0,
+            bottom: 0.1,
+            left: 0.1,
+            right: 0.1,
+          };
+        }
+      },
+    });
+
+    const tableStartsxxY = (doc as any).lastAutoTable.finalY + spacing;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(
+      "KOLOM UNTUK KOMITE TQC",
+      doc.internal.pageSize.width / 2,
+      tableStartsxxY,
+      {
+        align: "center",
+      },
+    );
+
+    autoTable(doc, {
+      startY: tableStartsxxY + spacing,
+      margin: { left: 10, right: 10 },
+      body: [
+        [
+          {
+            content: "Sudah dilaksanakan",
+            styles: {
+              fontStyle: "bold",
+              lineWidth: { top: 0.1, bottom: 0.1, left: 0.1, right: 0 },
+            },
+          },
+          {
+            content: "",
+            styles: {
+              lineWidth: { top: 0.1, bottom: 0.1, left: 0, right: 0.1 },
+            },
+          },
+          {
+            content: "Paraf & Tgl",
+            styles: {
+              fontStyle: "bold",
+            },
+          },
+        ],
+        [
+          { content: `${data?.komite_status}`, styles: { minCellHeight: 15 } },
+          { content: "", styles: { minCellHeight: 15 } },
+          { content: "", styles: { minCellHeight: 15 } },
+        ],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: {
+        1: { cellWidth: 60 },
+      },
+    });
+
+    const tableStartsxxsY = (doc as any).lastAutoTable.finalY + spacing;
+
+    // Judul di tengah halaman
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(
+      "PENILAIAN OLEH TEAM PENILAI",
+      doc.internal.pageSize.width / 2,
+      tableStartsxxsY,
+      {
+        align: "center",
+      },
+    );
+
+    autoTable(doc, {
+      startY: tableStartsxxsY + 5,
+      margin: { left: 10, right: 10 },
+      head: [["No", "Faktor Penilaian", "Nilai", "Reward"]],
+      body: [
+        ["1", "Reduksi Biaya", "", ""],
+        ["2", "Efisiensi MP", "", ""],
+        ["3", "Produktivitas", "", ""],
+        ["4", "Reduksi MTTR", "", ""],
+        ["5", "Safety", "", ""],
+        ["6", "Kualitas", "", ""],
+        ["7", "Lingkungan", "", ""],
+        ["8", "Manfaat", "", ""],
+        ["9", "Kepedulian", "", ""],
+        ["10", "Keaslian", "", ""],
+      ],
+      theme: "grid",
+      styles: { fontSize: 10 },
+      headStyles: {
+        fillColor: false,
+        textColor: "black",
+        lineWidth: 0.1,
+        halign: "center",
+        valign: "middle",
+      },
+    });
+
+    const tableStartssY = (doc as any).lastAutoTable.finalY + spacing;
+
+    autoTable(doc, {
+      startY: tableStartssY + spacing,
+      margin: { left: 10, right: 10 },
+      body: [
+        [
+          {
+            content: "Catatan khusus oleh Kepala Divisi/Kepala Bagian",
+            colSpan: 8,
+            styles: { halign: "center", fontStyle: "bold" },
+          },
+        ],
+        [
+          {
+            content:
+              "Berilah tanda X pada tulisan didalam kolom sesuai SS tsb.",
+            colSpan: 8,
+            styles: { halign: "center", fontSize: 8 },
+          },
+        ],
+        ["5R", "S", "M", "E", "Q", "C", "D", "P"],
+        ["Paraf :", "", "", "", "", "", "", "Benefit (Rp. / MH.) Perbulan ="],
+        ["", "", "", "", "", "", "", ""],
+        ["Section/Dept./Div. Head", "", "", "", "", "", "", ""],
+      ],
+      theme: "grid",
+      styles: {
+        fontSize: 9,
+        cellPadding: 2,
+        valign: "middle",
+        halign: "center",
+      },
+      columnStyles: {
+        0: { halign: "left", cellWidth: 30 }, // "Paraf :" lebih lebar
+        7: { halign: "left", cellWidth: 50 }, // "Benefit..." lebih lebar
+      },
+    });
+
     doc.save("suggestion_system.pdf");
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (index: number, value: any) => {
     const newValues = [...values];
     newValues[index] = value;

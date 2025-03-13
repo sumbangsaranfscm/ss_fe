@@ -16,7 +16,7 @@ export interface Saran {
   hasil_atau_manfaat_yang_diharapkan: string;
   status_a: string;
   status_b: string;
-  komite_status: string;
+  status_komite: string;
   benefit: string;
   catatan_khusus: string;
 }

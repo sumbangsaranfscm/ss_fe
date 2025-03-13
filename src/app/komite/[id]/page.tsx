@@ -4,7 +4,7 @@
 import useSSModule from "@/app/lib";
 import { ArrowLeft, Download, Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -30,7 +30,6 @@ const statusList = [
   "Pengulangan saran/ide lama",
   "Tidak dapat dipakai",
 ];
-
 const statusList2 = [
   "Tidak Ada",
   "Saran dapat dipakai/dilaksanakan",
@@ -38,33 +37,15 @@ const statusList2 = [
   "Pengulangan saran/ide lama",
   "Tidak dapat dipakai",
 ];
-
 const statusKomiteList = [
   "Sudah dilaksanakan",
   "Masih perlu pertimbangan",
   "Belum dapat nilai/pending",
   "Tidak dapat dipakai",
 ];
-
 const sasaranSaranList = ["Cost Down", "Kualitas", "Safety", "Lain-lain"];
-
 const pelaksanaanList = ["Belum", "Sudah"];
-
 const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
-
-const initialData = [
-  "Reduksi biaya",
-  "Efisiensi MP.",
-  "Produktifitas",
-  "Reduksi MH.",
-  "Safety",
-  "Kualitas",
-  "Lingkungan",
-  "Manfaat",
-  "Usaha",
-  "Kepedulian",
-  "Keaslian",
-];
 const columns = ["5R", "S", "M", "E", "Q", "C", "D", "P"];
 
 export default function DetailKomite() {
@@ -75,11 +56,35 @@ export default function DetailKomite() {
   const router = useRouter();
   const { useUpdateKomite } = useSSModule();
   const { isPending: isPendingUpdate, mutate } = useUpdateKomite();
-  const [values, setValues] = useState(Array(initialData.length).fill(""));
-  const [rewards, setRewards] = useState(Array(initialData.length).fill(0));
   const [benefit, setBenefit] = useState("");
   const [komiteStatus, setKomiteStatus] = useState("");
   const [catatanKhusus, setCatatanKhusus] = useState("null");
+
+  const [penilaian, setPenilaian] = useState({
+    penilaian: [
+      { faktor: "Reduksi biaya", nilai: 2, reward: 0 },
+      { faktor: "Efisiensi MP.", nilai: 0, reward: 0 },
+      { faktor: "Produktifitas", nilai: 0, reward: 0 },
+      { faktor: "Reduksi MH.", nilai: 0, reward: 0 },
+      { faktor: "Safety", nilai: 0, reward: 0 },
+      { faktor: "Kualitas", nilai: 0, reward: 0 },
+      { faktor: "Lingkungan", nilai: 0, reward: 0 },
+      { faktor: "Manfaat", nilai: 0, reward: 0 },
+      { faktor: "Usaha", nilai: 0, reward: 0 },
+      { faktor: "Kepedulian", nilai: 0, reward: 0 },
+      { faktor: "Keaslian", nilai: 0, reward: 0 },
+    ],
+    totalReward: 0,
+  });
+
+  penilaian.penilaian.map((item) => {
+    return (item.reward = item.nilai * 1000);
+  });
+  let total = 0;
+  penilaian.penilaian.map((item) => {
+    total = total + Number(item.reward);
+  });
+  penilaian.totalReward = total;
 
   const generatePDF = () => {
     const doc = new jsPDF("p", "mm", "a4");
@@ -245,18 +250,6 @@ export default function DetailKomite() {
 
     doc.save("suggestion_system.pdf");
   };
-
-  const handleInputChange = (index: number, value: any) => {
-    const newValues = [...values];
-    newValues[index] = value;
-    setValues(newValues);
-
-    const newRewards = [...rewards];
-    newRewards[index] = value * 1000;
-    setRewards(newRewards);
-  };
-
-  const totalReward = rewards.reduce((acc, curr) => acc + curr, 0);
 
   const handleSubmit = () => {
     if (komiteStatus == "") {
@@ -603,7 +596,11 @@ export default function DetailKomite() {
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
                     <RadioGroup
-                      defaultValue={komiteStatus}
+                      defaultValue={
+                        data?.status_komite.trim().length === 0
+                          ? ""
+                          : data?.status_komite
+                      }
                       onValueChange={(e) => {
                         setKomiteStatus(e);
                       }}
@@ -611,7 +608,11 @@ export default function DetailKomite() {
                       <>
                         {statusKomiteList.map((_, i) => (
                           <div key={i} className="flex items-center space-x-2">
-                            <RadioGroupItem value={_} id={`r_${_ + i + 5}`} />
+                            <RadioGroupItem
+                              disabled={data?.status_komite.trim().length !== 0}
+                              value={_}
+                              id={`r_${_ + i + 5}`}
+                            />
                             <Label htmlFor={`r_${_ + i + 5}`}>{_}</Label>
                           </div>
                         ))}
@@ -643,28 +644,45 @@ export default function DetailKomite() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {initialData.map((item, index) => (
+                {penilaian.penilaian.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell className="border-r align-middle">
                       {index + 1}
                     </TableCell>
                     <TableCell className="border-r align-middle">
-                      {item}
+                      {item.faktor}
                     </TableCell>
                     <TableCell className="w-1/3 border-r align-middle">
                       <Input
                         type="number"
-                        value={values[index]}
-                        min="0"
-                        onChange={(e) =>
-                          handleInputChange(index, Number(e.target.value))
-                        }
+                        value={item.nilai}
+                        onChange={(e) => {
+                          if (Number(e.target.value) >= 0) {
+                            setPenilaian((prev) => {
+                              let total = 0;
+
+                              prev.penilaian[index].nilai = Number(
+                                e.target.value,
+                              );
+                              prev.penilaian[index].reward =
+                                Number(e.target.value) * 1000;
+                              prev.penilaian.map((item) => {
+                                total = total + Number(item.reward);
+                              });
+                              prev.totalReward = total;
+
+                              console.log(prev);
+
+                              return {
+                                ...prev,
+                              };
+                            });
+                          }
+                        }}
                         className="w-full text-center"
                       />
                     </TableCell>
-                    <TableCell className="text-center">
-                      {rewards[index]}
-                    </TableCell>
+                    <TableCell className="text-center">{item.reward}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
@@ -672,7 +690,7 @@ export default function DetailKomite() {
                     Total
                   </TableCell>
                   <TableCell className="text-center font-bold">
-                    Rp. {totalReward}
+                    Rp. {penilaian.totalReward}
                   </TableCell>
                 </TableRow>
               </TableBody>

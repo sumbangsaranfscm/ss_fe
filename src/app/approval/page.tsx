@@ -96,6 +96,7 @@
           <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2">
             {filteredItems.map((_, i) => (
               <CardSaran
+                cardKomite={false}
                 handleClick={() => {
                   router.push(`/approval/${_.id}`);
                 }}

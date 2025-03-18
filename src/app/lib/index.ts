@@ -122,6 +122,7 @@ const useSSModule = () => {
     komite_status: string,
     catatan_khusus: string,
     benefit: string,
+    penilaian: string,
   ) => {
     return axiosClient
     .post(
@@ -129,7 +130,8 @@ const useSSModule = () => {
         `&id=${encodeURIComponent(id)}` +
         `&komite_status=${encodeURIComponent(komite_status)}` +
         `&catatan_khusus=${encodeURIComponent(catatan_khusus)}` +
-        `&benefit=${encodeURIComponent(benefit)}` 
+        `&benefit=${encodeURIComponent(benefit)}` + 
+        `&penilaian=${encodeURIComponent(penilaian)}`
     )
       .then((res) => res.data);
   };
@@ -141,12 +143,14 @@ const useSSModule = () => {
         komite_status: string,
         catatan_khusus: string,
         benefit: string,
+        penilaian: string,
       }) =>
         apiUpdateKomite(
           payload.id,
           payload.komite_status,
           payload.catatan_khusus,
           payload.benefit,
+          payload.penilaian
         ),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["sarandetail"] });

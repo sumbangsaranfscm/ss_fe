@@ -81,9 +81,9 @@ export default function Home() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Masukkan Kode Akses</DialogTitle>
+            <DialogTitle>Masukkan Sandi Akses</DialogTitle>
             <DialogDescription>
-              Silakan masukkan kode akses untuk masuk ke halaman {selectedPage}.
+              Silakan masukkan sandi akses untuk masuk ke halaman {selectedPage}.
             </DialogDescription>
           </DialogHeader>
           <Input

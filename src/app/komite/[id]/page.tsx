@@ -48,6 +48,10 @@ const pelaksanaanList = ["Belum", "Sudah"];
 const lokasiList = ["Plant", "Markt. & Purch.", "Fin. & Acct.", "HRD"];
 const columns = ["5R", "S", "M", "E", "Q", "C", "D", "P"];
 
+const formatRupiah = (value: number) => {
+  return new Intl.NumberFormat("id-ID").format(value);
+};
+
 export default function DetailKomite() {
   const params = useParams<{ id: string }>();
   const { useGetDetail } = useSSModule();
@@ -57,6 +61,9 @@ export default function DetailKomite() {
   const { useUpdateKomite } = useSSModule();
   const { isPending: isPendingUpdate, mutate } = useUpdateKomite();
   const [benefit, setBenefit] = useState("");
+  const formatRupiahNEW = (angka: string) => {
+    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
   const [komiteStatus, setKomiteStatus] = useState("");
   const [catatanKhusus, setCatatanKhusus] = useState("null");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -66,31 +73,35 @@ export default function DetailKomite() {
     );
   };
 
+  useEffect(() => {
+    console.log(benefit);
+  }, [benefit]);
+
   const [penilaian, setPenilaian] = useState({
     penilaian: [
-      { faktor: "Reduksi biaya", nilai: 0, reward: 0 },
-      { faktor: "Efisiensi MP.", nilai: 0, reward: 0 },
-      { faktor: "Produktifitas", nilai: 0, reward: 0 },
-      { faktor: "Reduksi MH.", nilai: 0, reward: 0 },
-      { faktor: "Safety", nilai: 0, reward: 0 },
-      { faktor: "Kualitas", nilai: 0, reward: 0 },
-      { faktor: "Lingkungan", nilai: 0, reward: 0 },
-      { faktor: "Manfaat", nilai: 0, reward: 0 },
-      { faktor: "Usaha", nilai: 0, reward: 0 },
-      { faktor: "Kepedulian", nilai: 0, reward: 0 },
-      { faktor: "Keaslian", nilai: 0, reward: 0 },
+      { faktor: "Reduksi biaya", nilai: "", reward: 0 },
+      { faktor: "Efisiensi MP.", nilai: "", reward: 0 },
+      { faktor: "Produktifitas", nilai: "", reward: 0 },
+      { faktor: "Reduksi MH.", nilai: "", reward: 0 },
+      { faktor: "Safety", nilai: "", reward: 0 },
+      { faktor: "Kualitas", nilai: "", reward: 0 },
+      { faktor: "Lingkungan", nilai: "", reward: 0 },
+      { faktor: "Manfaat", nilai: "", reward: 0 },
+      { faktor: "Usaha", nilai: "", reward: 0 },
+      { faktor: "Kepedulian", nilai: "", reward: 0 },
+      { faktor: "Keaslian", nilai: "", reward: 0 },
     ],
-    totalReward: 0,
+    totalReward: "",
   });
 
   penilaian.penilaian.map((item) => {
-    return (item.reward = item.nilai * 1000);
+    return (item.reward = Number(item.nilai) * 1000);
   });
   let total = 0;
   penilaian.penilaian.map((item) => {
     total = total + Number(item.reward);
   });
-  penilaian.totalReward = total;
+  penilaian.totalReward = total.toString();
 
   const generatePDF = () => {
     const doc = new jsPDF({
@@ -875,15 +886,10 @@ export default function DetailKomite() {
               <TableBody>
                 <TableRow className="hidden md:table-row">
                   <TableCell className="border-r align-top">
-                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Similique iusto quisquam
-                    libero maxime voluptatibus, enim voluptatum neque iste.
-                    Recusandae, ex.
+                    {data?.keadaan_sebelumnya}
                   </TableCell>
                   <TableCell className="align-top">
-                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Error aut iure in sint
-                    perspiciatis dolore enim earum suscipit inventore delectus!
+                    {data?.saran_yang_diajukan}
                   </TableCell>
                 </TableRow>
 
@@ -893,12 +899,7 @@ export default function DetailKomite() {
                   </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
-                  <TableCell colSpan={2}>
-                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Similique iusto quisquam
-                    libero maxime voluptatibus, enim voluptatum neque iste.
-                    Recusandae, ex.
-                  </TableCell>
+                  <TableCell colSpan={2}>{data?.keadaan_sebelumnya}</TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
                   <TableCell colSpan={2} className="font-semibold">
@@ -906,11 +907,7 @@ export default function DetailKomite() {
                   </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
-                  <TableCell colSpan={2}>
-                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Error aut iure in sint
-                    perspiciatis dolore enim earum suscipit inventore delectus!
-                  </TableCell>
+                  <TableCell colSpan={2}>{data?.saran_yang_diajukan}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -931,10 +928,7 @@ export default function DetailKomite() {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
-                    {data?.hasil_atau_manfaat_yang_diharapkan} Lorem ipsum dolor
-                    sit, amet consectetur adipisicing elit. Doloremque enim quis
-                    exercitationem! Repudiandae pariatur quod neque? Optio
-                    voluptatibus deleniti quibusdam!
+                    {data?.hasil_atau_manfaat_yang_diharapkan}
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -1191,13 +1185,13 @@ export default function DetailKomite() {
                           <TableCell className="w-1/3 border-r align-middle">
                             <Input
                               readOnly
-                              type="number"
+                              type="text"
                               value={item.nilai}
                               className="w-full text-center"
                             />
                           </TableCell>
                           <TableCell className="text-center">
-                            {item.reward}
+                            {formatRupiah(item.reward)}
                           </TableCell>
                         </TableRow>
                       ),
@@ -1212,22 +1206,23 @@ export default function DetailKomite() {
                         </TableCell>
                         <TableCell className="w-1/3 border-r align-middle">
                           <Input
-                            type="number"
+                            type="text"
+                            pattern="\d*"
+                            inputMode="numeric"
                             value={item.nilai}
                             onChange={(e) => {
                               if (Number(e.target.value) >= 0) {
                                 setPenilaian((prev) => {
                                   let total = 0;
 
-                                  prev.penilaian[index].nilai = Number(
-                                    e.target.value,
-                                  );
+                                  prev.penilaian[index].nilai = e.target.value;
+
                                   prev.penilaian[index].reward =
                                     Number(e.target.value) * 1000;
                                   prev.penilaian.map((item) => {
                                     total = total + Number(item.reward);
                                   });
-                                  prev.totalReward = total;
+                                  prev.totalReward = total.toString();
 
                                   console.log(prev);
 
@@ -1241,7 +1236,7 @@ export default function DetailKomite() {
                           />
                         </TableCell>
                         <TableCell className="text-center">
-                          {item.reward}
+                          {formatRupiah(item.reward)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1252,8 +1247,8 @@ export default function DetailKomite() {
                   <TableCell className="text-center font-bold">
                     Rp.{" "}
                     {data.status_komite.trim().length === 0
-                      ? penilaian.totalReward
-                      : JSON.parse(data.penilaian).totalReward}
+                      ? formatRupiah(Number(penilaian.totalReward))
+                      : formatRupiah(JSON.parse(data.penilaian).totalReward)}
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -1310,17 +1305,28 @@ export default function DetailKomite() {
                     Benefit (Rp. / MH.) Perbulan =
                   </TableCell>
                   <TableCell colSpan={6} className="border text-center">
-                    <Input
-                      value={
-                        data?.status_komite.trim().length !== 0
-                          ? data?.benefit
-                          : benefit
-                      }
-                      readOnly={data.status_komite.trim().length !== 0}
-                      onChange={(e) => setBenefit(e.target.value)}
-                      placeholder="Masukkan Benefit"
-                      className="text-center"
-                    />
+                    {data?.status_komite.trim().length !== 0 ? (
+                      <Input
+                        type="text"
+                        pattern="\d*"
+                        inputMode="numeric"
+                        value={formatRupiah(Number(data?.benefit))}
+                        readOnly
+                        placeholder="Masukkan Benefit"
+                        className="text-center"
+                      />
+                    ) : (
+                      <Input
+                        type="text"
+                        inputMode="numeric"
+                        value={benefit ? `${formatRupiahNEW(benefit)}` : ""}
+                        onChange={(e) => {
+                          setBenefit(e.target.value.replace(/\D/g, "")); // Hanya angka
+                        }}
+                        placeholder="Masukkan Benefit"
+                        className="text-center"
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
 

@@ -56,6 +56,7 @@ const useSSModule = () => {
       queryKey: ["sarandetail"],
       queryFn: () => apiGetDetail(id),
       enabled: id !== undefined || id !== "",
+      refetchOnWindowFocus: false
     });
 
     return { data, isPending, isFetching };

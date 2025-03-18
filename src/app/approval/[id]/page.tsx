@@ -158,15 +158,10 @@ export default function Detail() {
               <TableBody>
                 <TableRow className="hidden md:table-row">
                   <TableCell className="border-r align-top">
-                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Similique iusto quisquam
-                    libero maxime voluptatibus, enim voluptatum neque iste.
-                    Recusandae, ex.
+                    {data?.keadaan_sebelumnya}
                   </TableCell>
                   <TableCell className="align-top">
-                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Error aut iure in sint
-                    perspiciatis dolore enim earum suscipit inventore delectus!
+                    {data?.saran_yang_diajukan}
                   </TableCell>
                 </TableRow>
 
@@ -177,10 +172,7 @@ export default function Detail() {
                 </TableRow>
                 <TableRow className="md:hidden">
                   <TableCell colSpan={2}>
-                    {data?.keadaan_sebelumnya} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Similique iusto quisquam
-                    libero maxime voluptatibus, enim voluptatum neque iste.
-                    Recusandae, ex.
+                    {data?.keadaan_sebelumnya}
                   </TableCell>
                 </TableRow>
                 <TableRow className="md:hidden">
@@ -190,9 +182,7 @@ export default function Detail() {
                 </TableRow>
                 <TableRow className="md:hidden">
                   <TableCell colSpan={2}>
-                    {data?.saran_yang_diajukan} Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Error aut iure in sint
-                    perspiciatis dolore enim earum suscipit inventore delectus!
+                    {data?.saran_yang_diajukan}
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -214,10 +204,7 @@ export default function Detail() {
               <TableBody>
                 <TableRow>
                   <TableCell colSpan={2} className="align-top">
-                    {data?.hasil_atau_manfaat_yang_diharapkan} Lorem ipsum dolor
-                    sit, amet consectetur adipisicing elit. Doloremque enim quis
-                    exercitationem! Repudiandae pariatur quod neque? Optio
-                    voluptatibus deleniti quibusdam!
+                    {data?.hasil_atau_manfaat_yang_diharapkan}
                   </TableCell>
                 </TableRow>
               </TableBody>

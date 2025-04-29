@@ -53,7 +53,7 @@
     return (
       <div className="mycontainer relative mx-auto min-h-svh px-2 pt-4">
         <Logout open={open} setOpen={setOpen} handleClick={() => setOpen(true)} />
-        <h1 className="mb-5 text-2xl font-semibold">Halaman Atasan</h1>
+        <h1 className="mb-5 text-2xl font-semibold">Halaman Approval</h1>
 
         <div className="mb-2 grid w-full grid-cols-12 gap-1">
           <Input

@@ -10,7 +10,7 @@ const useSSModule = () => {
     return axiosClient
       .get(
         `${process.env.NEXT_PUBLIC_URL}`,
-        { params: { action: "read" } },
+        { params: { action: "readDataApproval" } },
       )
       .then((res) => res.data.data);
   };
@@ -27,8 +27,8 @@ const useSSModule = () => {
   const apiGetListKomite = async (): Promise<Saran[]> => {
     return axiosClient
       .get(
-        `${process.env.NEXT_PUBLIC_URL}?action=readDataKomite`,
-        { params: { action: "read" } },
+        `${process.env.NEXT_PUBLIC_URL}`,
+        { params: { action: "readDataKomite" } },
       )
       .then((res) => res.data.data);
   };
